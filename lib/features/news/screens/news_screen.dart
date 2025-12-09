@@ -8,6 +8,7 @@ import '../../../shared/widgets/favorite_button.dart';
 import '../../../shared/widgets/theme_toggle_button.dart';
 import '../../../shared/widgets/search_button.dart';
 import '../../../app/theme/colors.dart';
+import '../../../app/theme/spacing.dart';
 import '../providers/news_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
 
@@ -33,25 +34,12 @@ class NewsScreen extends ConsumerWidget {
                 pinned: true,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+                  titlePadding: EdgeInsets.only(left: AppSpacing.xl, bottom: AppSpacing.lg),
                   title: Text(
                     'News',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
-                  ),
-                  background: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppColors.secondary.withValues(alpha: 0.08),
-                          AppColors.tertiary.withValues(alpha: 0.04),
-                          Theme.of(context).scaffoldBackgroundColor,
-                        ],
-                      ),
-                    ),
                   ),
                 ),
                 actions: const [
@@ -71,12 +59,12 @@ class NewsScreen extends ConsumerWidget {
 
                   if (crossAxisCount > 1) {
                     return SliverPadding(
-                      padding: const EdgeInsets.all(20),
+                      padding: AppSpacing.paddingXl,
                       sliver: SliverGrid(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: crossAxisCount,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 20,
+                          mainAxisSpacing: AppSpacing.xl,
+                          crossAxisSpacing: AppSpacing.xl,
                           childAspectRatio: 0.9,
                         ),
                         delegate: SliverChildBuilderDelegate(
@@ -91,7 +79,7 @@ class NewsScreen extends ConsumerWidget {
                   }
 
                   return SliverPadding(
-                    padding: const EdgeInsets.all(20),
+                    padding: AppSpacing.paddingXl,
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) => _NewsCard(item: news[index]),
@@ -113,7 +101,7 @@ class NewsScreen extends ConsumerWidget {
                           size: 48,
                           color: Theme.of(context).colorScheme.error,
                         ),
-                        const SizedBox(height: 16),
+                        AppSpacing.verticalLg,
                         Text(
                           'Something went wrong',
                           style: Theme.of(context).textTheme.titleMedium,
@@ -136,12 +124,12 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: AppSpacing.paddingXxxl,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: AppSpacing.paddingXxl,
               decoration: BoxDecoration(
                 color: AppColors.secondary.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
@@ -152,13 +140,13 @@ class _EmptyState extends StatelessWidget {
                 color: AppColors.secondary.withValues(alpha: 0.6),
               ),
             ),
-            const SizedBox(height: 24),
+            AppSpacing.verticalXxl,
             Text(
               'No news available',
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            AppSpacing.verticalSm,
             Text(
               'Check back soon for community updates',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -191,16 +179,16 @@ class _NewsCard extends ConsumerWidget {
     );
 
     return Padding(
-      padding: EdgeInsets.only(bottom: compact ? 0 : 20),
+      padding: EdgeInsets.only(bottom: compact ? 0 : AppSpacing.xl),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () => context.push('/news/${item.id}'),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppSpacing.borderRadiusXl,
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: AppSpacing.borderRadiusXl,
               border: Border.all(
                 color: Theme.of(context)
                     .colorScheme
@@ -218,7 +206,6 @@ class _NewsCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image with overlay
                 if (item.imageUrl != null)
                   Expanded(
                     flex: compact ? 3 : 0,
@@ -278,7 +265,6 @@ class _NewsCard extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                          // Gradient overlay
                           Positioned.fill(
                             child: Container(
                               decoration: BoxDecoration(
@@ -294,18 +280,17 @@ class _NewsCard extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          // Date badge
                           Positioned(
-                            top: 12,
-                            left: 12,
+                            top: AppSpacing.md,
+                            left: AppSpacing.md,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: AppSpacing.borderRadiusTiny,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.1),
@@ -326,8 +311,8 @@ class _NewsCard extends ConsumerWidget {
                             ),
                           ),
                           Positioned(
-                            top: 12,
-                            right: 12,
+                            top: AppSpacing.md,
+                            right: AppSpacing.md,
                             child: FavoriteButton(
                               isFavorite: isFavorite,
                               onTap: () => ref
@@ -339,16 +324,14 @@ class _NewsCard extends ConsumerWidget {
                       ),
                     ),
                   ),
-                // Content
                 Expanded(
                   flex: compact ? 2 : 0,
                   child: Padding(
-                    padding: EdgeInsets.all(compact ? 16 : 20),
+                    padding: EdgeInsets.all(compact ? AppSpacing.lg : AppSpacing.xl),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: compact ? MainAxisSize.max : MainAxisSize.min,
                       children: [
-                        // Title
                         Text(
                           item.title,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -375,10 +358,9 @@ class _NewsCard extends ConsumerWidget {
                           ),
                         ],
                         if (compact) const Spacer(),
-                        // Bottom row for non-image cards
                         if (item.imageUrl == null && !compact)
                           Padding(
-                            padding: const EdgeInsets.only(top: 16),
+                            padding: EdgeInsets.only(top: AppSpacing.lg),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -417,4 +399,3 @@ class _NewsCard extends ConsumerWidget {
     );
   }
 }
-

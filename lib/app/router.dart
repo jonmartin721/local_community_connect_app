@@ -29,10 +29,6 @@ GoRouter createRouter({required bool showOnboarding}) => GoRouter(
       builder: (context, state) => const SearchScreen(),
     ),
     GoRoute(
-      path: '/settings',
-      builder: (context, state) => const SettingsScreen(),
-    ),
-    GoRoute(
       path: '/location-setup',
       builder: (context, state) {
         final isOnboarding = state.uri.queryParameters['onboarding'] == 'true';
@@ -94,6 +90,10 @@ GoRouter createRouter({required bool showOnboarding}) => GoRouter(
         GoRoute(
           path: '/favorites',
           builder: (context, state) => const FavoritesScreen(),
+        ),
+        GoRoute(
+          path: '/settings',
+          builder: (context, state) => const SettingsScreen(),
         ),
       ],
     ),

@@ -12,6 +12,7 @@ class BottomNavShell extends StatelessWidget {
     if (location.startsWith('/news')) return 1;
     if (location.startsWith('/resources')) return 2;
     if (location.startsWith('/favorites')) return 3;
+    if (location.startsWith('/settings')) return 4;
     return 0;
   }
 
@@ -25,6 +26,8 @@ class BottomNavShell extends StatelessWidget {
         context.go('/resources');
       case 3:
         context.go('/favorites');
+      case 4:
+        context.go('/settings');
     }
   }
 
@@ -55,6 +58,11 @@ class BottomNavShell extends StatelessWidget {
             icon: Icon(Icons.favorite_outline),
             selectedIcon: Icon(Icons.favorite),
             label: 'Favorites',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
