@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/models/models.dart';
+import '../../../shared/widgets/theme_toggle_button.dart';
+import '../../../shared/widgets/search_button.dart';
 import '../../../app/theme/colors.dart';
 import '../providers/resources_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -29,7 +31,6 @@ class _ResourcesScreenState extends ConsumerState<ResourcesScreen> {
           constraints: const BoxConstraints(maxWidth: 1400),
           child: CustomScrollView(
             slivers: [
-              // App bar with gradient
               SliverAppBar(
                 expandedHeight: 100,
                 floating: true,
@@ -57,30 +58,11 @@ class _ResourcesScreenState extends ConsumerState<ResourcesScreen> {
                     ),
                   ),
                 ),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: IconButton(
-                      icon: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outline
-                                .withValues(alpha: 0.1),
-                          ),
-                        ),
-                        child: const Icon(Icons.search_rounded, size: 22),
-                      ),
-                      onPressed: () => context.push('/search'),
-                    ),
-                  ),
+                actions: const [
+                  ThemeToggleButton(),
+                  SearchButton(),
                 ],
               ),
-              // Category filter chips with counts
               resourcesAsync.when(
                 data: (resources) {
                   final categories = resources.map((r) => r.category).toSet().toList()..sort();

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../shared/models/models.dart';
+import '../../../shared/widgets/theme_toggle_button.dart';
 import '../providers/favorites_provider.dart';
 import '../../events/providers/events_provider.dart';
 import '../../news/providers/news_provider.dart';
@@ -19,6 +20,9 @@ class FavoritesScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Favorites'),
+          actions: const [
+            ThemeToggleButton(),
+          ],
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Events', icon: Icon(Icons.event)),
@@ -91,7 +95,23 @@ class _FavoriteEventsTab extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 48,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Could not load events',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -148,7 +168,23 @@ class _FavoriteNewsTab extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 48,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Could not load news',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -205,12 +241,27 @@ class _FavoriteResourcesTab extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 48,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Could not load resources',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-// Event Card Widget
 class _EventCard extends ConsumerWidget {
   final Event event;
 
@@ -301,7 +352,6 @@ class _EventCard extends ConsumerWidget {
   }
 }
 
-// News Card Widget
 class _NewsCard extends ConsumerWidget {
   final NewsItem item;
 
@@ -368,7 +418,6 @@ class _NewsCard extends ConsumerWidget {
   }
 }
 
-// Resource Card Widget
 class _ResourceCard extends ConsumerWidget {
   final LocalResource resource;
 
