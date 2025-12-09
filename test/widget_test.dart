@@ -22,8 +22,8 @@ void main() {
       ),
     );
 
-    // Wait for async initialization
-    await tester.pumpAndSettle();
+    // Wait for async initialization (use pump with duration to avoid timeout with async providers)
+    await tester.pump(const Duration(seconds: 2));
 
     // Verify that the initial screen (Events) is shown.
     expect(find.text('Events'), findsAtLeastNWidgets(1));

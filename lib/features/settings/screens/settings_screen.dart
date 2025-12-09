@@ -74,7 +74,7 @@ class SettingsScreen extends ConsumerWidget {
               Consumer(
                 builder: (context, ref, child) {
                   final locationAsync = ref.watch(currentLocationProvider);
-                  final hasLocation = locationAsync.valueOrNull != null;
+                  final hasLocation = locationAsync.hasValue && locationAsync.value != null;
                   if (!hasLocation) return const SizedBox.shrink();
                   return _SettingsTile(
                     icon: Icons.refresh,
