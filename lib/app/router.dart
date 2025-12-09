@@ -8,6 +8,7 @@ import '../features/resources/screens/resources_screen.dart';
 import '../features/resources/screens/resource_detail_screen.dart';
 import '../features/favorites/screens/favorites_screen.dart';
 import '../features/search/screens/search_screen.dart';
+import '../features/settings/screens/settings_screen.dart';
 import '../features/onboarding/screens/onboarding_screen.dart';
 import '../shared/widgets/bottom_nav_shell.dart';
 
@@ -26,6 +27,10 @@ GoRouter createRouter({required bool showOnboarding}) => GoRouter(
       path: '/search',
       builder: (context, state) => const SearchScreen(),
     ),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen(),
+    ),
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) => BottomNavShell(child: child),
@@ -36,9 +41,13 @@ GoRouter createRouter({required bool showOnboarding}) => GoRouter(
           routes: [
             GoRoute(
               path: ':id',
-              builder: (context, state) => EventDetailScreen(
-                eventId: state.pathParameters['id']!,
-              ),
+              builder: (context, state) {
+                final id = state.pathParameters['id'];
+                if (id == null || id.isEmpty) {
+                  return const EventsScreen();
+                }
+                return EventDetailScreen(eventId: id);
+              },
             ),
           ],
         ),
@@ -48,9 +57,13 @@ GoRouter createRouter({required bool showOnboarding}) => GoRouter(
           routes: [
             GoRoute(
               path: ':id',
-              builder: (context, state) => NewsDetailScreen(
-                newsId: state.pathParameters['id']!,
-              ),
+              builder: (context, state) {
+                final id = state.pathParameters['id'];
+                if (id == null || id.isEmpty) {
+                  return const NewsScreen();
+                }
+                return NewsDetailScreen(newsId: id);
+              },
             ),
           ],
         ),
@@ -60,9 +73,13 @@ GoRouter createRouter({required bool showOnboarding}) => GoRouter(
           routes: [
             GoRoute(
               path: ':id',
-              builder: (context, state) => ResourceDetailScreen(
-                resourceId: state.pathParameters['id']!,
-              ),
+              builder: (context, state) {
+                final id = state.pathParameters['id'];
+                if (id == null || id.isEmpty) {
+                  return const ResourcesScreen();
+                }
+                return ResourceDetailScreen(resourceId: id);
+              },
             ),
           ],
         ),

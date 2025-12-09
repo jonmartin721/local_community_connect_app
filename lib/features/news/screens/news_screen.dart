@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../shared/models/models.dart';
+import '../../../shared/widgets/favorite_button.dart';
+import '../../../shared/widgets/theme_toggle_button.dart';
+import '../../../shared/widgets/search_button.dart';
 import '../../../app/theme/colors.dart';
 import '../providers/news_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -24,7 +27,6 @@ class NewsScreen extends ConsumerWidget {
           constraints: const BoxConstraints(maxWidth: 1400),
           child: CustomScrollView(
             slivers: [
-              // App bar with gradient
               SliverAppBar(
                 expandedHeight: 100,
                 floating: true,
@@ -52,30 +54,11 @@ class NewsScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: IconButton(
-                      icon: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outline
-                                .withValues(alpha: 0.1),
-                          ),
-                        ),
-                        child: const Icon(Icons.search_rounded, size: 22),
-                      ),
-                      onPressed: () => context.push('/search'),
-                    ),
-                  ),
+                actions: const [
+                  ThemeToggleButton(),
+                  SearchButton(),
                 ],
               ),
-              // News content
               newsAsync.when(
                 data: (news) {
                   if (news.isEmpty) {
@@ -342,11 +325,10 @@ class _NewsCard extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          // Favorite button
                           Positioned(
                             top: 12,
                             right: 12,
-                            child: _FavoriteButton(
+                            child: FavoriteButton(
                               isFavorite: isFavorite,
                               onTap: () => ref
                                   .read(favoritesProvider.notifier)
@@ -413,7 +395,7 @@ class _NewsCard extends ConsumerWidget {
                                             .withValues(alpha: 0.5),
                                       ),
                                 ),
-                                _FavoriteButton(
+                                FavoriteButton(
                                   isFavorite: isFavorite,
                                   onTap: () => ref
                                       .read(favoritesProvider.notifier)
@@ -436,60 +418,3 @@ class _NewsCard extends ConsumerWidget {
   }
 }
 
-class _FavoriteButton extends StatelessWidget {
-  final bool isFavorite;
-  final VoidCallback onTap;
-  final bool compact;
-
-  const _FavoriteButton({
-    required this.isFavorite,
-    required this.onTap,
-    this.compact = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(compact ? 8 : 12),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.all(compact ? 6 : 10),
-          decoration: BoxDecoration(
-            color: isFavorite
-                ? Colors.red.withValues(alpha: 0.1)
-                : (compact
-                    ? Colors.transparent
-                    : Colors.white.withValues(alpha: 0.95)),
-            borderRadius: BorderRadius.circular(compact ? 8 : 12),
-            boxShadow: compact
-                ? null
-                : [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      blurRadius: 8,
-                    ),
-                  ],
-          ),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            transitionBuilder: (child, animation) => ScaleTransition(
-              scale: animation,
-              child: child,
-            ),
-            child: Icon(
-              isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-              key: ValueKey(isFavorite),
-              size: compact ? 20 : 22,
-              color: isFavorite
-                  ? Colors.red
-                  : AppColors.onSurface.withValues(alpha: 0.6),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

@@ -4,6 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../shared/models/models.dart';
+import '../../../shared/utils/category_colors.dart';
+import '../../../shared/widgets/favorite_button.dart';
+import '../../../shared/widgets/theme_toggle_button.dart';
+import '../../../shared/widgets/search_button.dart';
 import '../../../app/theme/colors.dart';
 import '../providers/events_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -50,7 +54,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
           constraints: const BoxConstraints(maxWidth: 1400),
           child: CustomScrollView(
             slivers: [
-          // Custom App Bar with gradient
           SliverAppBar(
             expandedHeight: 120,
             floating: true,
@@ -80,30 +83,11 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 ),
               ),
             ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: IconButton(
-                  icon: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .outline
-                            .withValues(alpha: 0.1),
-                      ),
-                    ),
-                    child: const Icon(Icons.search_rounded, size: 22),
-                  ),
-                  onPressed: () => context.push('/search'),
-                ),
-              ),
+            actions: const [
+              ThemeToggleButton(),
+              SearchButton(),
             ],
           ),
-          // Category filter chips with counts
           eventsAsync.when(
             data: (allEvents) {
               final categoryCounts = <String, int>{};
@@ -147,7 +131,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                                         count: categoryCounts[category] ?? 0,
                                         isSelected:
                                             _selectedCategory == category,
-                                        color: _getCategoryColor(category),
+                                        color: getCategoryColor(category),
                                         onTap: () => setState(
                                             () => _selectedCategory = category),
                                       )),
@@ -170,7 +154,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                                       label: category,
                                       count: categoryCounts[category] ?? 0,
                                       isSelected: _selectedCategory == category,
-                                      color: _getCategoryColor(category),
+                                      color: getCategoryColor(category),
                                       onTap: () => setState(
                                           () => _selectedCategory = category),
                                     )),
@@ -184,7 +168,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
             loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
             error: (_, __) => const SliverToBoxAdapter(child: SizedBox.shrink()),
           ),
-          // Events list
           eventsAsync.when(
             data: (events) {
               final filteredEvents = _selectedCategory == null
@@ -199,7 +182,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                 );
               }
 
-              // Use grid on wider screens
               final crossAxisCount = isExtraWide ? 3 : (isWide ? 2 : 1);
 
               return SliverPadding(
@@ -294,25 +276,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
       ),
     ),
     );
-  }
-
-  Color _getCategoryColor(String category) {
-    switch (category) {
-      case 'Community':
-        return AppColors.primary;
-      case 'Government':
-        return const Color(0xFF5C7AEA);
-      case 'Arts':
-        return AppColors.tertiary;
-      case 'Sports':
-        return AppColors.secondary;
-      case 'Health':
-        return const Color(0xFFE07A9F);
-      case 'Education':
-        return const Color(0xFF7A9FE0);
-      default:
-        return AppColors.primary;
-    }
   }
 }
 
@@ -479,7 +442,7 @@ class _EventCard extends ConsumerWidget {
         (state) => state[FavoriteType.events]?.contains(event.id) ?? false,
       ),
     );
-    final categoryColor = _getCategoryColor(event.category);
+    final categoryColor = getCategoryColor(event.category);
 
     return Padding(
       padding: EdgeInsets.only(bottom: compact ? 0 : 20),
@@ -602,11 +565,10 @@ class _EventCard extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        // Favorite button
                         Positioned(
                           top: 12,
                           right: 12,
-                          child: _FavoriteButton(
+                          child: FavoriteButton(
                             isFavorite: isFavorite,
                             onTap: () => ref
                                 .read(favoritesProvider.notifier)
@@ -722,7 +684,7 @@ class _EventCard extends ConsumerWidget {
                                 ),
                               ],
                             ),
-                            _FavoriteButton(
+                            FavoriteButton(
                               isFavorite: isFavorite,
                               onTap: () => ref
                                   .read(favoritesProvider.notifier)
@@ -736,83 +698,6 @@ class _EventCard extends ConsumerWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color _getCategoryColor(String category) {
-    switch (category) {
-      case 'Community':
-        return AppColors.primary;
-      case 'Government':
-        return const Color(0xFF5C7AEA);
-      case 'Arts':
-        return AppColors.tertiary;
-      case 'Sports':
-        return AppColors.secondary;
-      case 'Health':
-        return const Color(0xFFE07A9F);
-      case 'Education':
-        return const Color(0xFF7A9FE0);
-      default:
-        return AppColors.primary;
-    }
-  }
-}
-
-class _FavoriteButton extends StatelessWidget {
-  final bool isFavorite;
-  final VoidCallback onTap;
-  final bool compact;
-
-  const _FavoriteButton({
-    required this.isFavorite,
-    required this.onTap,
-    this.compact = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(compact ? 8 : 12),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.all(compact ? 6 : 10),
-          decoration: BoxDecoration(
-            color: isFavorite
-                ? Colors.red.withValues(alpha: 0.1)
-                : (compact
-                    ? Colors.transparent
-                    : Colors.white.withValues(alpha: 0.95)),
-            borderRadius: BorderRadius.circular(compact ? 8 : 12),
-            boxShadow: compact
-                ? null
-                : [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      blurRadius: 8,
-                    ),
-                  ],
-          ),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            transitionBuilder: (child, animation) => ScaleTransition(
-              scale: animation,
-              child: child,
-            ),
-            child: Icon(
-              isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-              key: ValueKey(isFavorite),
-              size: compact ? 20 : 22,
-              color: isFavorite
-                  ? Colors.red
-                  : AppColors.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),

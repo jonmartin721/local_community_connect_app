@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../shared/models/models.dart';
+import '../../../shared/widgets/theme_toggle_button.dart';
 import '../providers/search_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
 
@@ -15,7 +16,6 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _searchController = TextEditingController();
-  String _query = '';
 
   @override
   void dispose() {
@@ -25,13 +25,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final searchResults = _query.isEmpty
+    final query = _searchController.text;
+    final searchResults = query.isEmpty
         ? null
-        : ref.watch(searchProvider(_query));
+        : ref.watch(searchProvider(query));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search'),
+        actions: const [
+          ThemeToggleButton(),
+        ],
       ),
       body: Column(
         children: [
@@ -43,28 +47,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               decoration: InputDecoration(
                 hintText: 'Search events, news, resources...',
                 prefixIcon: const Icon(Icons.search),
-                suffixIcon: _query.isNotEmpty
+                suffixIcon: query.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () {
                           _searchController.clear();
-                          setState(() {
-                            _query = '';
-                          });
+                          setState(() {});
                         },
                       )
                     : null,
               ),
-              onChanged: (value) {
-                setState(() {
-                  _query = value;
-                });
-              },
+              onChanged: (_) => setState(() {}),
             ),
           ),
           // Results
           Expanded(
-            child: _query.isEmpty
+            child: query.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -152,7 +150,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       );
                     },
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (error, stack) => Center(child: Text('Error: $error')),
+                    error: (error, stack) => Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline_rounded,
+                            size: 48,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Search failed',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
           ),
         ],
