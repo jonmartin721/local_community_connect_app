@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../app/theme/colors.dart';
 import '../../../shared/providers/theme_provider.dart';
+import '../../../shared/providers/providers.dart';
+import '../../../features/resources/providers/resources_provider.dart';
+import '../providers/location_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -36,6 +40,75 @@ class SettingsScreen extends ConsumerWidget {
                     ref.read(themeProvider.notifier).toggle();
                   },
                 ),
+              ),
+            ],
+          ),
+          // Location Section
+          _SettingsSection(
+            title: 'Location',
+            children: [
+              Consumer(
+                builder: (context, ref, child) {
+                  final locationAsync = ref.watch(currentLocationProvider);
+                  return locationAsync.when(
+                    data: (location) => _SettingsTile(
+                      icon: Icons.location_on_outlined,
+                      label: 'Your Location',
+                      subtitle: location?.displayName ?? 'Not set - using sample data',
+                      onTap: () => context.push('/location-setup'),
+                    ),
+                    loading: () => const _SettingsTile(
+                      icon: Icons.location_on_outlined,
+                      label: 'Your Location',
+                      subtitle: 'Loading...',
+                    ),
+                    error: (_, __) => _SettingsTile(
+                      icon: Icons.location_on_outlined,
+                      label: 'Your Location',
+                      subtitle: 'Error loading location',
+                      onTap: () => context.push('/location-setup'),
+                    ),
+                  );
+                },
+              ),
+              Consumer(
+                builder: (context, ref, child) {
+                  final locationAsync = ref.watch(currentLocationProvider);
+                  final hasLocation = locationAsync.valueOrNull != null;
+                  if (!hasLocation) return const SizedBox.shrink();
+                  return _SettingsTile(
+                    icon: Icons.refresh,
+                    label: 'Reset to Sample Data',
+                    subtitle: 'Clear location and use demo data',
+                    onTap: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Reset to Sample Data?'),
+                          content: const Text(
+                            'This will clear your location and replace resources with sample data.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancel'),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text('Reset'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true) {
+                        final hive = await ref.read(hiveServiceProvider.future);
+                        await hive.resetToSampleData();
+                        ref.invalidate(currentLocationProvider);
+                        ref.invalidate(resourcesProvider);
+                      }
+                    },
+                  );
+                },
               ),
             ],
           ),
