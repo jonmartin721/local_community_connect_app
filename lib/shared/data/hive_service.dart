@@ -103,4 +103,49 @@ class HiveService {
       Hive.box(settingsBox).get('seenOnboarding', defaultValue: false);
   Future<void> setSeenOnboarding(bool value) =>
       Hive.box(settingsBox).put('seenOnboarding', value);
+
+  // Location settings
+  String? get locationName => Hive.box(settingsBox).get('locationName');
+  double? get locationLat => Hive.box(settingsBox).get('locationLat');
+  double? get locationLon => Hive.box(settingsBox).get('locationLon');
+  bool get hasLocation => locationName != null && locationLat != null && locationLon != null;
+  bool get isUsingRealData => Hive.box(settingsBox).get('isUsingRealData', defaultValue: false);
+
+  Future<void> setLocation({
+    required String name,
+    required double lat,
+    required double lon,
+  }) async {
+    final box = Hive.box(settingsBox);
+    await box.put('locationName', name);
+    await box.put('locationLat', lat);
+    await box.put('locationLon', lon);
+  }
+
+  Future<void> clearLocation() async {
+    final box = Hive.box(settingsBox);
+    await box.delete('locationName');
+    await box.delete('locationLat');
+    await box.delete('locationLon');
+    await box.put('isUsingRealData', false);
+  }
+
+  // Resources management for real data
+  Future<void> setResources(List<LocalResource> resources) async {
+    final box = Hive.box<LocalResource>(resourcesBox);
+    await box.clear();
+    for (final resource in resources) {
+      await box.put(resource.id, resource);
+    }
+    await Hive.box(settingsBox).put('isUsingRealData', true);
+  }
+
+  Future<void> resetToSampleData() async {
+    await clearLocation();
+    final resources = Hive.box<LocalResource>(resourcesBox);
+    await resources.clear();
+    for (final resource in SampleData.resources) {
+      await resources.put(resource.id, resource);
+    }
+  }
 }
