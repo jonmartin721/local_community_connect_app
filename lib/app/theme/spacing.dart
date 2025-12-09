@@ -34,4 +34,22 @@ abstract class AppSpacing {
   static BorderRadius get borderRadiusSm => BorderRadius.circular(radiusSm);
   static BorderRadius get borderRadiusXs => BorderRadius.circular(radiusXs);
   static BorderRadius get borderRadiusTiny => BorderRadius.circular(radiusTiny);
+
+  // Vertical spacing helpers
+  static const SizedBox verticalXs = SizedBox(height: xs);
+  static const SizedBox verticalSm = SizedBox(height: sm);
+  static const SizedBox verticalMd = SizedBox(height: md);
+  static const SizedBox verticalLg = SizedBox(height: lg);
+  static const SizedBox verticalXl = SizedBox(height: xl);
+  static const SizedBox verticalXxl = SizedBox(height: xxl);
+  static const SizedBox verticalXxxl = SizedBox(height: xxxl);
+
+  // Horizontal spacing helpers
+  static const SizedBox horizontalXs = SizedBox(width: xs);
+  static const SizedBox horizontalSm = SizedBox(width: sm);
+  static const SizedBox horizontalMd = SizedBox(width: md);
+  static const SizedBox horizontalLg = SizedBox(width: lg);
+  static const SizedBox horizontalXl = SizedBox(width: xl);
+  static const SizedBox horizontalXxl = SizedBox(width: xxl);
+  static const SizedBox horizontalXxxl = SizedBox(width: xxxl);
 }
