@@ -15,6 +15,8 @@ class FavoriteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Ensure minimum 48px touch target for accessibility
+    // compact: 14 + 20 + 14 = 48px, normal: 13 + 22 + 13 = 48px
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -22,7 +24,7 @@ class FavoriteButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(compact ? 8 : 12),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.all(compact ? 6 : 10),
+          padding: EdgeInsets.all(compact ? 14 : 13),
           decoration: BoxDecoration(
             color: isFavorite
                 ? Colors.red.withValues(alpha: 0.1)
@@ -52,6 +54,7 @@ class FavoriteButton extends StatelessWidget {
               color: isFavorite
                   ? Colors.red
                   : AppColors.onSurface.withValues(alpha: 0.6),
+              semanticLabel: isFavorite ? 'Remove from favorites' : 'Add to favorites',
             ),
           ),
         ),
