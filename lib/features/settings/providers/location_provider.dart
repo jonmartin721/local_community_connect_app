@@ -112,8 +112,9 @@ class LocationSetup extends _$LocationSetup {
 
       await _hiveService.setResources(resources);
 
-      // Invalidate resources provider to refresh data
+      // Invalidate providers to refresh data
       ref.invalidate(resourcesProvider);
+      ref.invalidate(currentLocationProvider);
 
       state = state.copyWith(status: LocationSetupStatus.success);
       return true;

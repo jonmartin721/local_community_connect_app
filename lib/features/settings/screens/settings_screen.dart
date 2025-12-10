@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/colors.dart';
+import '../../../app/theme/spacing.dart';
 import '../../../shared/providers/theme_provider.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../features/resources/providers/resources_provider.dart';
@@ -237,7 +238,7 @@ class _SettingsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
+          padding: EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.xxl, AppSpacing.lg, AppSpacing.md),
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -270,10 +271,10 @@ class _SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(
           color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.08),
           width: 1,
@@ -281,7 +282,7 @@ class _SettingsTile extends StatelessWidget {
       ),
       child: ListTile(
         onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
         leading: Icon(
           icon,
           color: AppColors.primary,
@@ -333,7 +334,7 @@ class _LanguageOption extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
         child: Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium,

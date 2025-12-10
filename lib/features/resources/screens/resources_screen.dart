@@ -67,7 +67,8 @@ class _ResourcesScreenState extends ConsumerState<ResourcesScreen> {
                       height: 56,
                       margin: EdgeInsets.only(top: AppSpacing.sm),
                       child: isWide
-                          ? Padding(
+                          ? SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
                               padding: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                               child: Row(
                                 children: [

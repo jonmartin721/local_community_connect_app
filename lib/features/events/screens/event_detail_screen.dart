@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../app/theme/spacing.dart';
 import '../../../shared/widgets/theme_toggle_button.dart';
 import '../providers/events_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -24,7 +25,7 @@ class EventDetailScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.event_busy, size: 64),
-                  const SizedBox(height: 16),
+                  AppSpacing.verticalLg,
                   Text(
                     'Event not found',
                     style: Theme.of(context).textTheme.titleLarge,
@@ -40,176 +41,188 @@ class EventDetailScreen extends ConsumerWidget {
             ),
           );
 
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                expandedHeight: event.imageUrl != null ? 300 : 0,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text(
-                    event.title,
-                    style: const TextStyle(
-                      shadows: [
-                        Shadow(
-                          offset: Offset(0, 1),
-                          blurRadius: 3,
-                          color: Colors.black54,
-                        ),
-                      ],
-                    ),
-                  ),
-                  background: event.imageUrl != null
-                      ? CachedNetworkImage(
-                          imageUrl: event.imageUrl!,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                            child: const Center(child: CircularProgressIndicator()),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                            child: const Icon(Icons.image_not_supported),
-                          ),
-                        )
-                      : null,
-                ),
-                actions: [
-                  const ThemeToggleButton(),
-                  IconButton(
-                    icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                    ),
-                    color: isFavorite ? Colors.red : null,
-                    onPressed: () {
-                      ref.read(favoritesProvider.notifier).toggle(
-                            FavoriteType.events,
-                            event.id,
-                          );
-                    },
-                  ),
-                ],
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    // Date
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_today,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Date',
-                                  style: Theme.of(context).textTheme.labelSmall,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  DateFormat('EEEE, MMMM d, y').format(event.date),
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                ),
-                                Text(
-                                  DateFormat('h:mm a').format(event.date),
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ],
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: event.imageUrl != null ? 300 : 0,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: Text(
+                        event.title,
+                        style: const TextStyle(
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, 1),
+                              blurRadius: 3,
+                              color: Colors.black54,
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Location
-                    if (event.location != null) ...[
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                color: Theme.of(context).colorScheme.primary,
+                      background: event.imageUrl != null
+                          ? CachedNetworkImage(
+                              imageUrl: event.imageUrl!,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                child: const Center(child: CircularProgressIndicator()),
                               ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
+                              errorWidget: (context, url, error) => Container(
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                child: const Icon(Icons.image_not_supported),
+                              ),
+                            )
+                          : null,
+                    ),
+                    actions: [
+                      const ThemeToggleButton(),
+                      IconButton(
+                        icon: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                        ),
+                        color: isFavorite ? Colors.red : null,
+                        onPressed: () {
+                          ref.read(favoritesProvider.notifier).toggle(
+                                FavoriteType.events,
+                                event.id,
+                              );
+                        },
+                      ),
+                    ],
+                  ),
+                  SliverPadding(
+                    padding: AppSpacing.paddingLg,
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        // Date
+                        Card(
+                          child: Padding(
+                            padding: AppSpacing.paddingLg,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_today,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                AppSpacing.horizontalLg,
+                                Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Location',
+                                      'Date',
                                       style: Theme.of(context).textTheme.labelSmall,
                                     ),
-                                    const SizedBox(height: 4),
+                                    AppSpacing.verticalXs,
                                     Text(
-                                      event.location!,
+                                      DateFormat('EEEE, MMMM d, y').format(event.date),
                                       style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    Text(
+                                      DateFormat('h:mm a').format(event.date),
+                                      style: Theme.of(context).textTheme.bodyMedium,
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                    // Category
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.category,
-                              color: Theme.of(context).colorScheme.primary,
+                        AppSpacing.verticalLg,
+                        // Location
+                        if (event.location != null) ...[
+                          Card(
+                            child: Padding(
+                              padding: AppSpacing.paddingLg,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                  AppSpacing.horizontalLg,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Location',
+                                          style: Theme.of(context).textTheme.labelSmall,
+                                        ),
+                                        AppSpacing.verticalXs,
+                                        Text(
+                                          event.location!,
+                                          style: Theme.of(context).textTheme.titleMedium,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
+                          AppSpacing.verticalLg,
+                        ],
+                        // Category
+                        Card(
+                          child: Padding(
+                            padding: AppSpacing.paddingLg,
+                            child: Row(
                               children: [
-                                Text(
-                                  'Category',
-                                  style: Theme.of(context).textTheme.labelSmall,
+                                Icon(
+                                  Icons.category,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
-                                const SizedBox(height: 4),
-                                Chip(
-                                  label: Text(event.category),
+                                AppSpacing.horizontalLg,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Category',
+                                      style: Theme.of(context).textTheme.labelSmall,
+                                    ),
+                                    AppSpacing.verticalXs,
+                                    Chip(
+                                      label: Text(
+                                        event.category,
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                        ),
+                                      ),
+                                      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                                      side: BorderSide.none,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        AppSpacing.verticalXxl,
+                        // Description
+                        Text(
+                          'About this event',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        AppSpacing.verticalSm,
+                        Text(
+                          event.description,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ]),
                     ),
-                    const SizedBox(height: 24),
-                    // Description
-                    Text(
-                      'About this event',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      event.description,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ]),
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: AppSpacing.paddingXxxl,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -218,12 +231,12 @@ class EventDetailScreen extends ConsumerWidget {
                   size: 48,
                   color: Theme.of(context).colorScheme.error,
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.verticalLg,
                 Text(
                   'Could not load event',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.verticalSm,
                 Text(
                   'Please try again later',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

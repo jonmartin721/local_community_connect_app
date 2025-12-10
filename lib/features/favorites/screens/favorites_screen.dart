@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../app/theme/spacing.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/widgets/theme_toggle_button.dart';
 import '../providers/favorites_provider.dart';
@@ -52,6 +53,8 @@ class _FavoriteEventsTab extends ConsumerWidget {
       favoritesProvider.select((state) => state[FavoriteType.events] ?? {}),
     );
     final eventsAsync = ref.watch(eventsProvider);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWide = screenWidth > 800;
 
     return eventsAsync.when(
       data: (allEvents) {
@@ -69,12 +72,12 @@ class _FavoriteEventsTab extends ConsumerWidget {
                   size: 64,
                   color: Theme.of(context).colorScheme.outline,
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.verticalLg,
                 Text(
                   'No favorite events yet',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.verticalSm,
                 Text(
                   'Tap the heart icon on events to save them here',
                   style: Theme.of(context).textTheme.bodySmall,
@@ -85,13 +88,33 @@ class _FavoriteEventsTab extends ConsumerWidget {
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: favoriteEvents.length,
-          itemBuilder: (context, index) {
-            final event = favoriteEvents[index];
-            return _EventCard(event: event);
-          },
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1400),
+            child: isWide
+                ? GridView.builder(
+                    padding: AppSpacing.paddingLg,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: AppSpacing.lg,
+                      crossAxisSpacing: AppSpacing.lg,
+                      childAspectRatio: 1.4,
+                    ),
+                    itemCount: favoriteEvents.length,
+                    itemBuilder: (context, index) {
+                      final event = favoriteEvents[index];
+                      return _EventCard(event: event);
+                    },
+                  )
+                : ListView.builder(
+                    padding: AppSpacing.paddingLg,
+                    itemCount: favoriteEvents.length,
+                    itemBuilder: (context, index) {
+                      final event = favoriteEvents[index];
+                      return _EventCard(event: event);
+                    },
+                  ),
+          ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -104,7 +127,7 @@ class _FavoriteEventsTab extends ConsumerWidget {
               size: 48,
               color: Theme.of(context).colorScheme.error,
             ),
-            const SizedBox(height: 16),
+            AppSpacing.verticalLg,
             Text(
               'Could not load events',
               style: Theme.of(context).textTheme.titleMedium,
@@ -125,6 +148,8 @@ class _FavoriteNewsTab extends ConsumerWidget {
       favoritesProvider.select((state) => state[FavoriteType.news] ?? {}),
     );
     final newsAsync = ref.watch(newsProvider);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWide = screenWidth > 800;
 
     return newsAsync.when(
       data: (allNews) {
@@ -142,12 +167,12 @@ class _FavoriteNewsTab extends ConsumerWidget {
                   size: 64,
                   color: Theme.of(context).colorScheme.outline,
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.verticalLg,
                 Text(
                   'No favorite news yet',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.verticalSm,
                 Text(
                   'Tap the heart icon on news to save them here',
                   style: Theme.of(context).textTheme.bodySmall,
@@ -158,13 +183,33 @@ class _FavoriteNewsTab extends ConsumerWidget {
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: favoriteNews.length,
-          itemBuilder: (context, index) {
-            final item = favoriteNews[index];
-            return _NewsCard(item: item);
-          },
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1400),
+            child: isWide
+                ? GridView.builder(
+                    padding: AppSpacing.paddingLg,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: AppSpacing.lg,
+                      crossAxisSpacing: AppSpacing.lg,
+                      childAspectRatio: 1.4,
+                    ),
+                    itemCount: favoriteNews.length,
+                    itemBuilder: (context, index) {
+                      final item = favoriteNews[index];
+                      return _NewsCard(item: item);
+                    },
+                  )
+                : ListView.builder(
+                    padding: AppSpacing.paddingLg,
+                    itemCount: favoriteNews.length,
+                    itemBuilder: (context, index) {
+                      final item = favoriteNews[index];
+                      return _NewsCard(item: item);
+                    },
+                  ),
+          ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -177,7 +222,7 @@ class _FavoriteNewsTab extends ConsumerWidget {
               size: 48,
               color: Theme.of(context).colorScheme.error,
             ),
-            const SizedBox(height: 16),
+            AppSpacing.verticalLg,
             Text(
               'Could not load news',
               style: Theme.of(context).textTheme.titleMedium,
@@ -198,6 +243,8 @@ class _FavoriteResourcesTab extends ConsumerWidget {
       favoritesProvider.select((state) => state[FavoriteType.resources] ?? {}),
     );
     final resourcesAsync = ref.watch(resourcesProvider);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWide = screenWidth > 800;
 
     return resourcesAsync.when(
       data: (allResources) {
@@ -215,12 +262,12 @@ class _FavoriteResourcesTab extends ConsumerWidget {
                   size: 64,
                   color: Theme.of(context).colorScheme.outline,
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.verticalLg,
                 Text(
                   'No favorite resources yet',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.verticalSm,
                 Text(
                   'Tap the heart icon on resources to save them here',
                   style: Theme.of(context).textTheme.bodySmall,
@@ -231,13 +278,33 @@ class _FavoriteResourcesTab extends ConsumerWidget {
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: favoriteResources.length,
-          itemBuilder: (context, index) {
-            final resource = favoriteResources[index];
-            return _ResourceCard(resource: resource);
-          },
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1400),
+            child: isWide
+                ? GridView.builder(
+                    padding: AppSpacing.paddingLg,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: AppSpacing.lg,
+                      crossAxisSpacing: AppSpacing.lg,
+                      childAspectRatio: 2.5,
+                    ),
+                    itemCount: favoriteResources.length,
+                    itemBuilder: (context, index) {
+                      final resource = favoriteResources[index];
+                      return _ResourceCard(resource: resource);
+                    },
+                  )
+                : ListView.builder(
+                    padding: AppSpacing.paddingLg,
+                    itemCount: favoriteResources.length,
+                    itemBuilder: (context, index) {
+                      final resource = favoriteResources[index];
+                      return _ResourceCard(resource: resource);
+                    },
+                  ),
+          ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -250,7 +317,7 @@ class _FavoriteResourcesTab extends ConsumerWidget {
               size: 48,
               color: Theme.of(context).colorScheme.error,
             ),
-            const SizedBox(height: 16),
+            AppSpacing.verticalLg,
             Text(
               'Could not load resources',
               style: Theme.of(context).textTheme.titleMedium,
@@ -270,7 +337,7 @@ class _EventCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: AppSpacing.lg),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => context.push('/events/${event.id}'),
@@ -294,7 +361,7 @@ class _EventCard extends ConsumerWidget {
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -304,7 +371,7 @@ class _EventCard extends ConsumerWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.verticalSm,
                   Row(
                     children: [
                       Icon(
@@ -312,7 +379,7 @@ class _EventCard extends ConsumerWidget {
                         size: 16,
                         color: Theme.of(context).colorScheme.primary,
                       ),
-                      const SizedBox(width: 4),
+                      AppSpacing.horizontalXs,
                       Text(
                         DateFormat('MMM d, y').format(event.date),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -322,7 +389,7 @@ class _EventCard extends ConsumerWidget {
                     ],
                   ),
                   if (event.location != null) ...[
-                    const SizedBox(height: 4),
+                    AppSpacing.verticalXs,
                     Row(
                       children: [
                         Icon(
@@ -330,7 +397,7 @@ class _EventCard extends ConsumerWidget {
                           size: 16,
                           color: Theme.of(context).colorScheme.outline,
                         ),
-                        const SizedBox(width: 4),
+                        AppSpacing.horizontalXs,
                         Expanded(
                           child: Text(
                             event.location!,
@@ -360,7 +427,7 @@ class _NewsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: AppSpacing.lg),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => context.push('/news/${item.id}'),
@@ -384,7 +451,7 @@ class _NewsCard extends ConsumerWidget {
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLg,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -394,14 +461,14 @@ class _NewsCard extends ConsumerWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.verticalSm,
                   Text(
                     DateFormat('MMM d, y').format(item.publishedDate),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.outline,
                         ),
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.verticalSm,
                   Text(
                     item.summary,
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -426,11 +493,11 @@ class _ResourceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: AppSpacing.md),
       child: InkWell(
         onTap: () => context.push('/resources/${resource.id}'),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLg,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -440,7 +507,7 @@ class _ResourceCard extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
               ),
-              const SizedBox(height: 4),
+              AppSpacing.verticalXs,
               Text(
                 resource.category,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -448,7 +515,7 @@ class _ResourceCard extends ConsumerWidget {
                     ),
               ),
               if (resource.address != null) ...[
-                const SizedBox(height: 8),
+                AppSpacing.verticalSm,
                 Row(
                   children: [
                     Icon(
@@ -456,7 +523,7 @@ class _ResourceCard extends ConsumerWidget {
                       size: 16,
                       color: Theme.of(context).colorScheme.outline,
                     ),
-                    const SizedBox(width: 4),
+                    AppSpacing.horizontalXs,
                     Expanded(
                       child: Text(
                         resource.address!,

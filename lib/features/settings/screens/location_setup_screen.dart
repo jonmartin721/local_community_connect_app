@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/colors.dart';
+import '../../../app/theme/spacing.dart';
 import '../../../shared/models/models.dart';
 import '../providers/location_provider.dart';
 
@@ -43,121 +44,126 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
               ]
             : null,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Enter your city or zip code to find local resources',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 16),
-            Row(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: Padding(
+            padding: AppSpacing.paddingLg,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: 'Portland, OR or 97201',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.location_on_outlined),
-                    ),
-                    textInputAction: TextInputAction.search,
-                    onSubmitted: (_) => _search(),
-                  ),
+                Text(
+                  'Enter your city or zip code to find local resources',
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
-                const SizedBox(width: 8),
-                FilledButton(
-                  onPressed: setupState.status == LocationSetupStatus.searching
-                      ? null
-                      : _search,
-                  child: setupState.status == LocationSetupStatus.searching
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Search'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            if (setupState.errorMessage != null)
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.errorContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
+                AppSpacing.verticalLg,
+                Row(
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                    const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        setupState.errorMessage!,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onErrorContainer,
+                      child: TextField(
+                        controller: _controller,
+                        decoration: const InputDecoration(
+                          hintText: 'Portland, OR or 97201',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.location_on_outlined),
                         ),
+                        textInputAction: TextInputAction.search,
+                        onSubmitted: (_) => _search(),
                       ),
+                    ),
+                    AppSpacing.horizontalSm,
+                    FilledButton(
+                      onPressed: setupState.status == LocationSetupStatus.searching
+                          ? null
+                          : _search,
+                      child: setupState.status == LocationSetupStatus.searching
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Search'),
                     ),
                   ],
                 ),
-              ),
-            if (setupState.status == LocationSetupStatus.selectingLocation) ...[
-              Text(
-                'Select your location:',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: setupState.searchResults.length,
-                  itemBuilder: (context, index) {
-                    final location = setupState.searchResults[index];
-                    final isSelected = _selectedLocation == location;
-                    return RadioListTile<UserLocation>(
-                      value: location,
-                      groupValue: _selectedLocation,
-                      onChanged: (value) {
-                        setState(() => _selectedLocation = value);
-                      },
-                      title: Text(
-                        location.displayName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      selected: isSelected,
-                      activeColor: AppColors.primary,
-                    );
-                  },
-                ),
-              ),
-            ],
-            if (setupState.status == LocationSetupStatus.fetchingResources)
-              const Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 16),
-                      Text('Finding local resources...'),
-                    ],
+                AppSpacing.verticalXxl,
+                if (setupState.errorMessage != null)
+                  Container(
+                    padding: AppSpacing.paddingMd,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      borderRadius: AppSpacing.borderRadiusSm,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                        AppSpacing.horizontalSm,
+                        Expanded(
+                          child: Text(
+                            setupState.errorMessage!,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onErrorContainer,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            const Spacer(),
-            if (setupState.status == LocationSetupStatus.selectingLocation)
-              FilledButton(
-                onPressed: _selectedLocation != null ? _confirmSelection : null,
-                child: const Text('Continue'),
-              ),
-          ],
+                if (setupState.status == LocationSetupStatus.selectingLocation) ...[
+                  Text(
+                    'Select your location:',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  AppSpacing.verticalSm,
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: setupState.searchResults.length,
+                      itemBuilder: (context, index) {
+                        final location = setupState.searchResults[index];
+                        final isSelected = _selectedLocation == location;
+                        return RadioListTile<UserLocation>(
+                          value: location,
+                          groupValue: _selectedLocation,
+                          onChanged: (value) {
+                            setState(() => _selectedLocation = value);
+                          },
+                          title: Text(
+                            location.displayName,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          selected: isSelected,
+                          activeColor: AppColors.primary,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+                if (setupState.status == LocationSetupStatus.fetchingResources)
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const CircularProgressIndicator(),
+                          AppSpacing.verticalLg,
+                          const Text('Finding local resources...'),
+                        ],
+                      ),
+                    ),
+                  ),
+                const Spacer(),
+                if (setupState.status == LocationSetupStatus.selectingLocation)
+                  FilledButton(
+                    onPressed: _selectedLocation != null ? _confirmSelection : null,
+                    child: const Text('Continue'),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );

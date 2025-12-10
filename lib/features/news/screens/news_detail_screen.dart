@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../../app/theme/spacing.dart';
 import '../../../shared/widgets/theme_toggle_button.dart';
 import '../providers/news_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -24,7 +25,7 @@ class NewsDetailScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.article_outlined, size: 64),
-                  const SizedBox(height: 16),
+                  AppSpacing.verticalLg,
                   Text(
                     'Article not found',
                     style: Theme.of(context).textTheme.titleLarge,
@@ -40,111 +41,116 @@ class NewsDetailScreen extends ConsumerWidget {
             ),
           );
 
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                expandedHeight: newsItem.imageUrl != null ? 300 : 0,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text(
-                    newsItem.title,
-                    style: const TextStyle(
-                      shadows: [
-                        Shadow(
-                          offset: Offset(0, 1),
-                          blurRadius: 3,
-                          color: Colors.black54,
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: newsItem.imageUrl != null ? 300 : 0,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: Text(
+                        newsItem.title,
+                        style: const TextStyle(
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, 1),
+                              blurRadius: 3,
+                              color: Colors.black54,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
+                      background: newsItem.imageUrl != null
+                          ? CachedNetworkImage(
+                              imageUrl: newsItem.imageUrl!,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                child: const Center(child: CircularProgressIndicator()),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                child: const Icon(Icons.image_not_supported),
+                              ),
+                            )
+                          : null,
                     ),
+                    actions: [
+                      const ThemeToggleButton(),
+                      IconButton(
+                        icon: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                        ),
+                        color: isFavorite ? Colors.red : null,
+                        onPressed: () {
+                          ref.read(favoritesProvider.notifier).toggle(
+                                FavoriteType.news,
+                                newsItem.id,
+                              );
+                        },
+                      ),
+                    ],
                   ),
-                  background: newsItem.imageUrl != null
-                      ? CachedNetworkImage(
-                          imageUrl: newsItem.imageUrl!,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                            child: const Center(child: CircularProgressIndicator()),
+                  SliverPadding(
+                    padding: AppSpacing.paddingLg,
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        // Published date
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                            AppSpacing.horizontalSm,
+                            Text(
+                              'Published ${DateFormat('MMMM d, y').format(newsItem.publishedDate)}',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.outline,
+                                  ),
+                            ),
+                          ],
+                        ),
+                        AppSpacing.verticalXxl,
+                        // Summary
+                        Text(
+                          newsItem.summary,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        AppSpacing.verticalLg,
+                        const Divider(),
+                        AppSpacing.verticalLg,
+                        // Content
+                        if (newsItem.content != null)
+                          Text(
+                            newsItem.content!,
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  height: 1.6,
+                                ),
+                          )
+                        else
+                          Text(
+                            'No additional content available.',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontStyle: FontStyle.italic,
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
                           ),
-                          errorWidget: (context, url, error) => Container(
-                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                            child: const Icon(Icons.image_not_supported),
-                          ),
-                        )
-                      : null,
-                ),
-                actions: [
-                  const ThemeToggleButton(),
-                  IconButton(
-                    icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      ]),
                     ),
-                    color: isFavorite ? Colors.red : null,
-                    onPressed: () {
-                      ref.read(favoritesProvider.notifier).toggle(
-                            FavoriteType.news,
-                            newsItem.id,
-                          );
-                    },
                   ),
                 ],
               ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    // Published date
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Published ${DateFormat('MMMM d, y').format(newsItem.publishedDate)}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.outline,
-                              ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    // Summary
-                    Text(
-                      newsItem.summary,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    const Divider(),
-                    const SizedBox(height: 16),
-                    // Content
-                    if (newsItem.content != null)
-                      Text(
-                        newsItem.content!,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              height: 1.6,
-                            ),
-                      )
-                    else
-                      Text(
-                        'No additional content available.',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontStyle: FontStyle.italic,
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                      ),
-                  ]),
-                ),
-              ),
-            ],
+            ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: AppSpacing.paddingXxxl,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -153,12 +159,12 @@ class NewsDetailScreen extends ConsumerWidget {
                   size: 48,
                   color: Theme.of(context).colorScheme.error,
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.verticalLg,
                 Text(
                   'Could not load article',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.verticalSm,
                 Text(
                   'Please try again later',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

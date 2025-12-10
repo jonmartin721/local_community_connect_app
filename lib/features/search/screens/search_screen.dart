@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../app/theme/spacing.dart';
 import '../../../shared/models/models.dart';
 import '../../../shared/widgets/theme_toggle_button.dart';
 import '../providers/search_provider.dart';
@@ -37,139 +38,144 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ThemeToggleButton(),
         ],
       ),
-      body: Column(
-        children: [
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search events, news, resources...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: query.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {});
-                        },
-                      )
-                    : null,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1400),
+          child: Column(
+            children: [
+              // Search bar
+              Padding(
+                padding: AppSpacing.paddingLg,
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search events, news, resources...',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: query.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {});
+                            },
+                          )
+                        : null,
+                  ),
+                  onChanged: (_) => setState(() {}),
+                ),
               ),
-              onChanged: (_) => setState(() {}),
-            ),
-          ),
-          // Results
-          Expanded(
-            child: query.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search,
-                          size: 64,
-                          color: Theme.of(context).colorScheme.outline,
+              // Results
+              Expanded(
+                child: query.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search,
+                              size: 64,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                            AppSpacing.verticalLg,
+                            Text(
+                              'Search for events, news, and resources',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Search for events, news, and resources',
-                          style: Theme.of(context).textTheme.titleMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  )
-                : searchResults!.when(
-                    data: (results) {
-                      if (results.isEmpty) {
-                        return Center(
+                      )
+                    : searchResults!.when(
+                        data: (results) {
+                          if (results.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.search_off,
+                                    size: 64,
+                                    color: Theme.of(context).colorScheme.outline,
+                                  ),
+                                  AppSpacing.verticalLg,
+                                  Text(
+                                    'No results found',
+                                    style: Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  AppSpacing.verticalSm,
+                                  Text(
+                                    'Try searching with different keywords',
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          return ListView(
+                            padding: AppSpacing.paddingLg,
+                            children: [
+                              // Events
+                              if (results.events.isNotEmpty) ...[
+                                _SectionHeader(
+                                  title: 'Events',
+                                  count: results.events.length,
+                                ),
+                                AppSpacing.verticalSm,
+                                ...results.events.map((event) {
+                                  return _EventCard(event: event);
+                                }),
+                                AppSpacing.verticalXxl,
+                              ],
+                              // News
+                              if (results.news.isNotEmpty) ...[
+                                _SectionHeader(
+                                  title: 'News',
+                                  count: results.news.length,
+                                ),
+                                AppSpacing.verticalSm,
+                                ...results.news.map((item) {
+                                  return _NewsCard(item: item);
+                                }),
+                                AppSpacing.verticalXxl,
+                              ],
+                              // Resources
+                              if (results.resources.isNotEmpty) ...[
+                                _SectionHeader(
+                                  title: 'Resources',
+                                  count: results.resources.length,
+                                ),
+                                AppSpacing.verticalSm,
+                                ...results.resources.map((resource) {
+                                  return _ResourceCard(resource: resource);
+                                }),
+                              ],
+                            ],
+                          );
+                        },
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (error, stack) => Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.search_off,
-                                size: 64,
-                                color: Theme.of(context).colorScheme.outline,
+                                Icons.error_outline_rounded,
+                                size: 48,
+                                color: Theme.of(context).colorScheme.error,
                               ),
-                              const SizedBox(height: 16),
+                              AppSpacing.verticalLg,
                               Text(
-                                'No results found',
+                                'Search failed',
                                 style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Try searching with different keywords',
-                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
                           ),
-                        );
-                      }
-
-                      return ListView(
-                        padding: const EdgeInsets.all(16),
-                        children: [
-                          // Events
-                          if (results.events.isNotEmpty) ...[
-                            _SectionHeader(
-                              title: 'Events',
-                              count: results.events.length,
-                            ),
-                            const SizedBox(height: 8),
-                            ...results.events.map((event) {
-                              return _EventCard(event: event);
-                            }),
-                            const SizedBox(height: 24),
-                          ],
-                          // News
-                          if (results.news.isNotEmpty) ...[
-                            _SectionHeader(
-                              title: 'News',
-                              count: results.news.length,
-                            ),
-                            const SizedBox(height: 8),
-                            ...results.news.map((item) {
-                              return _NewsCard(item: item);
-                            }),
-                            const SizedBox(height: 24),
-                          ],
-                          // Resources
-                          if (results.resources.isNotEmpty) ...[
-                            _SectionHeader(
-                              title: 'Resources',
-                              count: results.resources.length,
-                            ),
-                            const SizedBox(height: 8),
-                            ...results.resources.map((resource) {
-                              return _ResourceCard(resource: resource);
-                            }),
-                          ],
-                        ],
-                      );
-                    },
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (error, stack) => Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.error_outline_rounded,
-                            size: 48,
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Search failed',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -206,7 +212,7 @@ class _EventCard extends ConsumerWidget {
     );
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         onTap: () => context.push('/events/${event.id}'),
         leading: Icon(
@@ -227,6 +233,7 @@ class _EventCard extends ConsumerWidget {
         trailing: IconButton(
           icon: Icon(
             isFavorite ? Icons.favorite : Icons.favorite_border,
+            semanticLabel: isFavorite ? 'Remove from favorites' : 'Add to favorites',
           ),
           color: isFavorite ? Colors.red : null,
           onPressed: () {
@@ -255,7 +262,7 @@ class _NewsCard extends ConsumerWidget {
     );
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         onTap: () => context.push('/news/${item.id}'),
         leading: Icon(
@@ -278,6 +285,7 @@ class _NewsCard extends ConsumerWidget {
         trailing: IconButton(
           icon: Icon(
             isFavorite ? Icons.favorite : Icons.favorite_border,
+            semanticLabel: isFavorite ? 'Remove from favorites' : 'Add to favorites',
           ),
           color: isFavorite ? Colors.red : null,
           onPressed: () {
@@ -306,7 +314,7 @@ class _ResourceCard extends ConsumerWidget {
     );
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListTile(
         onTap: () => context.push('/resources/${resource.id}'),
         leading: Icon(
@@ -327,6 +335,7 @@ class _ResourceCard extends ConsumerWidget {
         trailing: IconButton(
           icon: Icon(
             isFavorite ? Icons.favorite : Icons.favorite_border,
+            semanticLabel: isFavorite ? 'Remove from favorites' : 'Add to favorites',
           ),
           color: isFavorite ? Colors.red : null,
           onPressed: () {

@@ -128,68 +128,73 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     }),
                   ),
                   const SizedBox(height: 40),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: _currentPage < 2
-                          ? FilledButton(
-                              key: const ValueKey('next'),
-                              onPressed: () {
-                                _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.easeOutCubic,
-                                );
-                              },
-                              style: FilledButton.styleFrom(
-                                backgroundColor: _getPageColor(_currentPage),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: AppSpacing.borderRadiusLg,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Continue',
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 320),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: _currentPage < 2
+                              ? FilledButton(
+                                  key: const ValueKey('next'),
+                                  onPressed: () {
+                                    _pageController.nextPage(
+                                      duration: const Duration(milliseconds: 400),
+                                      curve: Curves.easeOutCubic,
+                                    );
+                                  },
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: _getPageColor(_currentPage),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: AppSpacing.borderRadiusLg,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Continue',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                      AppSpacing.horizontalSm,
+                                      const Icon(
+                                        Icons.arrow_forward_rounded,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : FilledButton(
+                                  key: const ValueKey('start'),
+                                  onPressed: _completeOnboarding,
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: AppColors.tertiary,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: AppSpacing.borderRadiusLg,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Get Started',
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium
                                         ?.copyWith(
-                                          color: Colors.white,
+                                          color: AppColors.onSurface,
                                           fontWeight: FontWeight.w700,
                                         ),
                                   ),
-                                  AppSpacing.horizontalSm,
-                                  const Icon(
-                                    Icons.arrow_forward_rounded,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : FilledButton(
-                              key: const ValueKey('start'),
-                              onPressed: _completeOnboarding,
-                              style: FilledButton.styleFrom(
-                                backgroundColor: AppColors.tertiary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: AppSpacing.borderRadiusLg,
                                 ),
-                              ),
-                              child: Text(
-                                'Get Started',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
-                                      color: AppColors.onSurface,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                              ),
-                            ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
