@@ -33,6 +33,10 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Test Hive databases
+test_hive/
+test_hive_provider/
+
 # Symbolication related
 app.*.symbols
 
