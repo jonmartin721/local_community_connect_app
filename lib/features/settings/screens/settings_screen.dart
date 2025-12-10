@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/colors.dart';
 import '../../../app/theme/spacing.dart';
-import '../../../shared/providers/theme_provider.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../features/resources/providers/resources_provider.dart';
 import '../providers/location_provider.dart';
