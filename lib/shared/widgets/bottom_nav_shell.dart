@@ -6,6 +6,8 @@ class BottomNavShell extends StatelessWidget {
 
   const BottomNavShell({super.key, required this.child});
 
+  static const _breakpoint = 800.0;
+
   int _currentIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     if (location.startsWith('/events')) return 0;
@@ -33,6 +35,52 @@ class BottomNavShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWide = screenWidth >= _breakpoint;
+
+    if (isWide) {
+      return Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: _currentIndex(context),
+              onDestinationSelected: (index) => _onTap(context, index),
+              labelType: NavigationRailLabelType.all,
+              destinations: const [
+                NavigationRailDestination(
+                  icon: Icon(Icons.event_outlined),
+                  selectedIcon: Icon(Icons.event),
+                  label: Text('Events'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.article_outlined),
+                  selectedIcon: Icon(Icons.article),
+                  label: Text('News'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.location_on_outlined),
+                  selectedIcon: Icon(Icons.location_on),
+                  label: Text('Resources'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.favorite_outline),
+                  selectedIcon: Icon(Icons.favorite),
+                  label: Text('Favorites'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.settings_outlined),
+                  selectedIcon: Icon(Icons.settings),
+                  label: Text('Settings'),
+                ),
+              ],
+            ),
+            const VerticalDivider(thickness: 1, width: 1),
+            Expanded(child: child),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       body: child,
       bottomNavigationBar: NavigationBar(

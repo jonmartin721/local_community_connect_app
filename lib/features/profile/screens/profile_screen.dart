@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/colors.dart';
+import '../../../app/theme/spacing.dart';
 import '../../../shared/providers/providers.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -65,22 +66,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             ),
           ),
           SliverToBoxAdapter(
-            child: FadeTransition(
-              opacity: CurvedAnimation(
-                parent: _animationController,
-                curve: const Interval(0.0, 0.3, curve: Curves.easeOut),
-              ),
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0, 0.2),
-                  end: Offset.zero,
-                ).animate(CurvedAnimation(
-                  parent: _animationController,
-                  curve: const Interval(0.0, 0.3, curve: Curves.easeOut),
-                )),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1400),
+                child: FadeTransition(
+                  opacity: CurvedAnimation(
+                    parent: _animationController,
+                    curve: const Interval(0.0, 0.3, curve: Curves.easeOut),
+                  ),
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 0.2),
+                      end: Offset.zero,
+                    ).animate(CurvedAnimation(
+                      parent: _animationController,
+                      curve: const Interval(0.0, 0.3, curve: Curves.easeOut),
+                    )),
+                    child: Padding(
+                      padding: AppSpacing.paddingXl,
+                      child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Profile Header Card
@@ -287,29 +291,41 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       ),
                       const SizedBox(height: 24),
                       // Action Buttons
-                      SizedBox(
-                        width: double.infinity,
-                        child: FilledButton(
-                          onPressed: () {},
-                          child: const Text('Edit Profile'),
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 320),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: FilledButton(
+                              onPressed: () {},
+                              child: const Text('Edit Profile'),
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            _showLogoutDialog(context);
-                          },
-                          child: const Text('Sign Out'),
+                      AppSpacing.verticalMd,
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 320),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _showLogoutDialog(context);
+                              },
+                              child: const Text('Sign Out'),
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      AppSpacing.verticalXl,
                     ],
                   ),
                 ),
               ),
             ),
+          ),
+        ),
           ),
         ],
       ),

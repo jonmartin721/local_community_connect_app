@@ -13,6 +13,11 @@ import 'package:local_community_connect_app/app/router.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
+    // Set a mobile-sized surface (narrower than 800px breakpoint for NavigationBar)
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
     // Build our app and trigger a frame.
     final router = createRouter(showOnboarding: false);
 

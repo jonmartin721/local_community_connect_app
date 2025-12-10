@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../app/theme/spacing.dart';
 import '../../../shared/widgets/theme_toggle_button.dart';
 import '../providers/resources_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
@@ -43,7 +44,7 @@ class ResourceDetailScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.location_off, size: 64),
-                  const SizedBox(height: 16),
+                  AppSpacing.verticalLg,
                   Text(
                     'Resource not found',
                     style: Theme.of(context).textTheme.titleLarge,
@@ -59,125 +60,141 @@ class ResourceDetailScreen extends ConsumerWidget {
             ),
           );
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header with favorite button
-                Row(
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: SingleChildScrollView(
+                padding: AppSpacing.paddingLg,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        resource.name,
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    // Header with favorite button
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            resource.name,
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                          ),
+                          color: isFavorite ? Colors.red : null,
+                          onPressed: () {
+                            ref.read(favoritesProvider.notifier).toggle(
+                                  FavoriteType.resources,
+                                  resource.id,
+                                );
+                          },
+                        ),
+                      ],
+                    ),
+                    AppSpacing.verticalSm,
+                    Chip(
+                      label: Text(
+                        resource.category,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                      avatar: Icon(
+                        Icons.category,
+                        size: 18,
+                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                      side: BorderSide.none,
+                    ),
+                    AppSpacing.verticalXxl,
+                    // Description
+                    if (resource.description != null) ...[
+                      Text(
+                        'About',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                      AppSpacing.verticalSm,
+                      Text(
+                        resource.description!,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      color: isFavorite ? Colors.red : null,
-                      onPressed: () {
-                        ref.read(favoritesProvider.notifier).toggle(
-                              FavoriteType.resources,
-                              resource.id,
-                            );
-                      },
+                      AppSpacing.verticalXxl,
+                    ],
+                    // Contact Information
+                    Text(
+                      'Contact Information',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
+                    AppSpacing.verticalLg,
+                    // Address
+                    if (resource.address != null)
+                      Card(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.location_on,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          title: const Text('Address'),
+                          subtitle: Text(resource.address!),
+                        ),
+                      ),
+                    AppSpacing.verticalSm,
+                    // Phone
+                    if (resource.phoneNumber != null)
+                      Card(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.phone,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          title: const Text('Phone'),
+                          subtitle: Text(resource.phoneNumber!),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.call),
+                            onPressed: () => _launchPhone(resource.phoneNumber!),
+                            tooltip: 'Call',
+                          ),
+                        ),
+                      ),
+                    AppSpacing.verticalSm,
+                    // Website
+                    if (resource.websiteUrl != null)
+                      Card(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.language,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          title: const Text('Website'),
+                          subtitle: Text(
+                            resource.websiteUrl!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.open_in_new),
+                            onPressed: () => _launchWebsite(resource.websiteUrl!),
+                            tooltip: 'Open website',
+                          ),
+                        ),
+                      ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Chip(
-                  label: Text(resource.category),
-                  avatar: const Icon(Icons.category, size: 18),
-                ),
-                const SizedBox(height: 24),
-                // Description
-                if (resource.description != null) ...[
-                  Text(
-                    'About',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    resource.description!,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 24),
-                ],
-                // Contact Information
-                Text(
-                  'Contact Information',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(height: 16),
-                // Address
-                if (resource.address != null)
-                  Card(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.location_on,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: const Text('Address'),
-                      subtitle: Text(resource.address!),
-                    ),
-                  ),
-                const SizedBox(height: 8),
-                // Phone
-                if (resource.phoneNumber != null)
-                  Card(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.phone,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: const Text('Phone'),
-                      subtitle: Text(resource.phoneNumber!),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.call),
-                        onPressed: () => _launchPhone(resource.phoneNumber!),
-                        tooltip: 'Call',
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 8),
-                // Website
-                if (resource.websiteUrl != null)
-                  Card(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.language,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: const Text('Website'),
-                      subtitle: Text(
-                        resource.websiteUrl!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.open_in_new),
-                        onPressed: () => _launchWebsite(resource.websiteUrl!),
-                        tooltip: 'Open website',
-                      ),
-                    ),
-                  ),
-              ],
+              ),
             ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: AppSpacing.paddingXxxl,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -186,12 +203,12 @@ class ResourceDetailScreen extends ConsumerWidget {
                   size: 48,
                   color: Theme.of(context).colorScheme.error,
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.verticalLg,
                 Text(
                   'Could not load resource',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.verticalSm,
                 Text(
                   'Please try again later',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

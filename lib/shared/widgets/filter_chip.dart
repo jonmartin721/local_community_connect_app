@@ -19,7 +19,14 @@ class AppFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chipColor = color ?? Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final chipColor = color ?? theme.colorScheme.primary;
+
+    // Compute contrasting text color for selected state based on chip luminance
+    final selectedTextColor = chipColor.computeLuminance() > 0.5
+        ? Colors.black87
+        : Colors.white;
 
     return Padding(
       padding: EdgeInsets.only(right: AppSpacing.md),
@@ -38,15 +45,12 @@ class AppFilterChip extends StatelessWidget {
             decoration: BoxDecoration(
               color: isSelected
                   ? chipColor
-                  : Theme.of(context).colorScheme.surface,
+                  : theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
                 color: isSelected
                     ? chipColor
-                    : Theme.of(context)
-                        .colorScheme
-                        .outline
-                        .withValues(alpha: 0.15),
+                    : theme.colorScheme.outline.withValues(alpha: isDark ? 0.4 : 0.15),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -55,10 +59,10 @@ class AppFilterChip extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  style: theme.textTheme.labelLarge?.copyWith(
                         color: isSelected
-                            ? Colors.white
-                            : Theme.of(context).colorScheme.onSurface,
+                            ? selectedTextColor
+                            : theme.colorScheme.onSurface,
                         fontWeight: FontWeight.w600,
                       ),
                 ),
@@ -72,14 +76,14 @@ class AppFilterChip extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Colors.white.withValues(alpha: 0.25)
-                          : chipColor.withValues(alpha: 0.12),
+                          ? selectedTextColor.withValues(alpha: 0.2)
+                          : chipColor.withValues(alpha: isDark ? 0.25 : 0.12),
                       borderRadius: AppSpacing.borderRadiusXs,
                     ),
                     child: Text(
                       count.toString(),
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: isSelected ? Colors.white : chipColor,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                            color: isSelected ? selectedTextColor : chipColor,
                             fontWeight: FontWeight.w700,
                           ),
                     ),
