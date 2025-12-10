@@ -112,20 +112,6 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
-          // Language Section
-          _SettingsSection(
-            title: 'Language',
-            children: [
-              _SettingsTile(
-                icon: Icons.language,
-                label: 'Language',
-                subtitle: 'English',
-                onTap: () {
-                  _showLanguageDialog(context);
-                },
-              ),
-            ],
-          ),
           // About Section
           _SettingsSection(
             title: 'About',
@@ -138,32 +124,6 @@ class SettingsScreen extends ConsumerWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  void _showLanguageDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _LanguageOption(
-              label: 'English',
-              onTap: () => Navigator.pop(context),
-            ),
-            _LanguageOption(
-              label: 'Spanish',
-              onTap: () => Navigator.pop(context),
-            ),
-            _LanguageOption(
-              label: 'French',
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -261,30 +221,6 @@ class _SettingsTile extends StatelessWidget {
                         .withValues(alpha: 0.4),
                   )
                 : null),
-      ),
-    );
-  }
-}
-
-class _LanguageOption extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _LanguageOption({
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
       ),
     );
   }
