@@ -135,20 +135,6 @@ class SettingsScreen extends ConsumerWidget {
                 label: 'Version',
                 subtitle: '1.0.0',
               ),
-              _SettingsTile(
-                icon: Icons.description_outlined,
-                label: 'Terms of Service',
-                onTap: () {
-                  // TODO: Navigate to terms
-                },
-              ),
-              _SettingsTile(
-                icon: Icons.privacy_tip_outlined,
-                label: 'Privacy Policy',
-                onTap: () {
-                  // TODO: Navigate to privacy policy
-                },
-              ),
             ],
           ),
         ],
