@@ -32,7 +32,7 @@ class HiveService {
       Hive.openBox<Event>(eventsBox),
       Hive.openBox<NewsItem>(newsBox),
       Hive.openBox<LocalResource>(resourcesBox),
-      Hive.openBox<List<String>>(favoritesBox),
+      Hive.openBox(favoritesBox),
       Hive.openBox(settingsBox),
     ]);
 
@@ -79,13 +79,19 @@ class HiveService {
 
   // Favorites
   Set<String> getFavoriteIds(String type) {
-    final box = Hive.box<List<String>>(favoritesBox);
-    return (box.get(type) ?? []).toSet();
+    final box = Hive.box(favoritesBox);
+    final value = box.get(type);
+    if (value == null) return {};
+    // Cast to handle web where Hive returns List<dynamic>
+    return (value as List).map((e) => e.toString()).toSet();
   }
 
   Future<void> toggleFavorite(String type, String id) async {
-    final box = Hive.box<List<String>>(favoritesBox);
-    final current = (box.get(type) ?? []).toList();
+    final box = Hive.box(favoritesBox);
+    final value = box.get(type);
+    final current = value == null
+        ? <String>[]
+        : (value as List).map((e) => e.toString()).toList();
     if (current.contains(id)) {
       current.remove(id);
     } else {
@@ -133,7 +139,10 @@ class HiveService {
   // Resources management for real data
   Future<void> setResources(List<LocalResource> resources) async {
     final box = Hive.box<LocalResource>(resourcesBox);
-    await box.clear();
+    // Delete all existing keys explicitly to ensure sample data is removed
+    final existingKeys = box.keys.toList();
+    await box.deleteAll(existingKeys);
+    // Add new resources
     for (final resource in resources) {
       await box.put(resource.id, resource);
     }
