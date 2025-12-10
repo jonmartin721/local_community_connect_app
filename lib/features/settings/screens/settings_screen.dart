@@ -112,45 +112,6 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
-          // Notifications Section
-          _SettingsSection(
-            title: 'Notifications',
-            children: [
-              _SettingsTile(
-                icon: Icons.notifications_outlined,
-                label: 'Push Notifications',
-                subtitle: 'Receive event and news updates',
-                trailing: Switch(
-                  value: true,
-                  onChanged: (value) {
-                    // TODO: Implement notification toggle
-                  },
-                ),
-              ),
-              _SettingsTile(
-                icon: Icons.event_outlined,
-                label: 'Event Alerts',
-                subtitle: 'Notify for new events',
-                trailing: Switch(
-                  value: true,
-                  onChanged: (value) {
-                    // TODO: Implement event alert toggle
-                  },
-                ),
-              ),
-              _SettingsTile(
-                icon: Icons.newspaper_outlined,
-                label: 'News Updates',
-                subtitle: 'Notify for new articles',
-                trailing: Switch(
-                  value: false,
-                  onChanged: (value) {
-                    // TODO: Implement news update toggle
-                  },
-                ),
-              ),
-            ],
-          ),
           // Language Section
           _SettingsSection(
             title: 'Language',
