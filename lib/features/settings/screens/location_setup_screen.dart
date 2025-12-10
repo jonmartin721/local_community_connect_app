@@ -126,7 +126,9 @@ class _LocationSetupScreenState extends ConsumerState<LocationSetupScreen> {
                         final isSelected = _selectedLocation == location;
                         return RadioListTile<UserLocation>(
                           value: location,
+                          // ignore: deprecated_member_use
                           groupValue: _selectedLocation,
+                          // ignore: deprecated_member_use
                           onChanged: (value) {
                             setState(() => _selectedLocation = value);
                           },
