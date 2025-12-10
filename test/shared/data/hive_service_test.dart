@@ -43,6 +43,7 @@ void main() {
   tearDown(() async {
     // Just clear the boxes, don't close them
     await Hive.box(HiveService.favoritesBox).clear();
+    await Hive.box(HiveService.settingsBox).clear();
   });
 
   group('HiveService Favorites', () {
@@ -77,6 +78,49 @@ void main() {
       expect(eventFavorites, isNot(contains('id-2')));
       expect(newsFavorites, contains('id-2'));
       expect(newsFavorites, isNot(contains('id-1')));
+    });
+  });
+
+  group('HiveService Settings', () {
+    test('isDarkMode defaults to false', () {
+      expect(hiveService.isDarkMode, isFalse);
+    });
+
+    test('setDarkMode persists the value', () async {
+      await hiveService.setDarkMode(true);
+      expect(hiveService.isDarkMode, isTrue);
+
+      await hiveService.setDarkMode(false);
+      expect(hiveService.isDarkMode, isFalse);
+    });
+
+    test('hasSeenOnboarding defaults to false', () {
+      expect(hiveService.hasSeenOnboarding, isFalse);
+    });
+
+    test('setSeenOnboarding persists the value', () async {
+      await hiveService.setSeenOnboarding(true);
+      expect(hiveService.hasSeenOnboarding, isTrue);
+    });
+
+    test('hasLocation returns false when no location set', () {
+      expect(hiveService.hasLocation, isFalse);
+    });
+
+    test('setLocation and clearLocation work correctly', () async {
+      await hiveService.setLocation(
+        name: 'Test City',
+        lat: 40.7128,
+        lon: -74.0060,
+      );
+
+      expect(hiveService.hasLocation, isTrue);
+      expect(hiveService.locationName, equals('Test City'));
+      expect(hiveService.locationLat, equals(40.7128));
+      expect(hiveService.locationLon, equals(-74.0060));
+
+      await hiveService.clearLocation();
+      expect(hiveService.hasLocation, isFalse);
     });
   });
 }
