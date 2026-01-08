@@ -123,4 +123,69 @@ void main() {
       expect(hiveService.hasLocation, isFalse);
     });
   });
+
+  group('HiveService Profile Settings', () {
+    test('notificationsEnabled defaults to true', () {
+      expect(hiveService.notificationsEnabled, isTrue);
+    });
+
+    test('setNotificationsEnabled persists the value', () async {
+      await hiveService.setNotificationsEnabled(false);
+      expect(hiveService.notificationsEnabled, isFalse);
+
+      await hiveService.setNotificationsEnabled(true);
+      expect(hiveService.notificationsEnabled, isTrue);
+    });
+
+    test('privateProfile defaults to false', () {
+      expect(hiveService.privateProfile, isFalse);
+    });
+
+    test('setPrivateProfile persists the value', () async {
+      await hiveService.setPrivateProfile(true);
+      expect(hiveService.privateProfile, isTrue);
+
+      await hiveService.setPrivateProfile(false);
+      expect(hiveService.privateProfile, isFalse);
+    });
+
+    test('emailDigestEnabled defaults to true', () {
+      expect(hiveService.emailDigestEnabled, isTrue);
+    });
+
+    test('setEmailDigestEnabled persists the value', () async {
+      await hiveService.setEmailDigestEnabled(false);
+      expect(hiveService.emailDigestEnabled, isFalse);
+
+      await hiveService.setEmailDigestEnabled(true);
+      expect(hiveService.emailDigestEnabled, isTrue);
+    });
+
+    test('totalFavoritesCount returns 0 when no favorites', () {
+      expect(hiveService.totalFavoritesCount, equals(0));
+    });
+
+    test('totalFavoritesCount counts all favorite types', () async {
+      await hiveService.toggleFavorite('events', 'e1');
+      await hiveService.toggleFavorite('events', 'e2');
+      await hiveService.toggleFavorite('news', 'n1');
+      await hiveService.toggleFavorite('resources', 'r1');
+      await hiveService.toggleFavorite('resources', 'r2');
+      await hiveService.toggleFavorite('resources', 'r3');
+
+      expect(hiveService.totalFavoritesCount, equals(6));
+    });
+
+    test('totalFavoritesCount updates when favorites change', () async {
+      await hiveService.toggleFavorite('events', 'e1');
+      expect(hiveService.totalFavoritesCount, equals(1));
+
+      await hiveService.toggleFavorite('news', 'n1');
+      expect(hiveService.totalFavoritesCount, equals(2));
+
+      // Remove one
+      await hiveService.toggleFavorite('events', 'e1');
+      expect(hiveService.totalFavoritesCount, equals(1));
+    });
+  });
 }
