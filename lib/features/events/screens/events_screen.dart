@@ -118,7 +118,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
                   );
                 },
                 loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
-                error: (_, __) => const SliverToBoxAdapter(child: SizedBox.shrink()),
+                error: (_, _) => const SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
               eventsAsync.when(
                 data: (events) {

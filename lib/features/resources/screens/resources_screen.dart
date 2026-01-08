@@ -113,7 +113,7 @@ class _ResourcesScreenState extends ConsumerState<ResourcesScreen> {
                   );
                 },
                 loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
-                error: (_, __) => const SliverToBoxAdapter(child: SizedBox.shrink()),
+                error: (_, _) => const SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
               resourcesAsync.when(
                 data: (resources) {

@@ -12,7 +12,7 @@ class ThemeNotifier extends _$ThemeNotifier {
     return hiveAsync.when(
       data: (hive) => hive.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       loading: () => ThemeMode.system,
-      error: (_, __) => ThemeMode.system,
+      error: (_, _) => ThemeMode.system,
     );
   }
 

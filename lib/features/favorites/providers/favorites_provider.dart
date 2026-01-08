@@ -17,7 +17,7 @@ class FavoritesNotifier extends _$FavoritesNotifier {
         FavoriteType.resources: hive.getFavoriteIds('resources'),
       },
       loading: () => {for (final type in FavoriteType.values) type: {}},
-      error: (_, __) => {for (final type in FavoriteType.values) type: {}},
+      error: (_, _) => {for (final type in FavoriteType.values) type: {}},
     );
   }
 
