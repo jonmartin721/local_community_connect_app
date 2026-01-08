@@ -10,6 +10,7 @@ import '../features/favorites/screens/favorites_screen.dart';
 import '../features/search/screens/search_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
 import '../features/settings/screens/location_setup_screen.dart';
+import '../features/profile/screens/profile_screen.dart';
 import '../features/onboarding/screens/onboarding_screen.dart';
 import '../shared/widgets/bottom_nav_shell.dart';
 
@@ -34,6 +35,10 @@ GoRouter createRouter({required bool showOnboarding}) => GoRouter(
         final isOnboarding = state.uri.queryParameters['onboarding'] == 'true';
         return LocationSetupScreen(isOnboarding: isOnboarding);
       },
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
     ShellRoute(
       navigatorKey: _shellNavigatorKey,

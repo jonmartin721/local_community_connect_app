@@ -26,6 +26,18 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
+          // Account Section
+          _SettingsSection(
+            title: 'Account',
+            children: [
+              _SettingsTile(
+                icon: Icons.person_outline,
+                label: 'Profile',
+                subtitle: 'View and edit your profile',
+                onTap: () => context.push('/profile'),
+              ),
+            ],
+          ),
           // Display Section
           _SettingsSection(
             title: 'Display',
@@ -62,7 +74,7 @@ class SettingsScreen extends ConsumerWidget {
                       label: 'Your Location',
                       subtitle: 'Loading...',
                     ),
-                    error: (_, __) => _SettingsTile(
+                    error: (_, _) => _SettingsTile(
                       icon: Icons.location_on_outlined,
                       label: 'Your Location',
                       subtitle: 'Error loading location',

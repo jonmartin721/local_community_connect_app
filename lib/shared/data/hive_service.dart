@@ -157,4 +157,33 @@ class HiveService {
       await resources.put(resource.id, resource);
     }
   }
+
+  // Profile preferences
+  bool get notificationsEnabled =>
+      Hive.box(settingsBox).get('notificationsEnabled', defaultValue: true);
+  Future<void> setNotificationsEnabled(bool value) =>
+      Hive.box(settingsBox).put('notificationsEnabled', value);
+
+  bool get privateProfile =>
+      Hive.box(settingsBox).get('privateProfile', defaultValue: false);
+  Future<void> setPrivateProfile(bool value) =>
+      Hive.box(settingsBox).put('privateProfile', value);
+
+  bool get emailDigestEnabled =>
+      Hive.box(settingsBox).get('emailDigestEnabled', defaultValue: true);
+  Future<void> setEmailDigestEnabled(bool value) =>
+      Hive.box(settingsBox).put('emailDigestEnabled', value);
+
+  // Get total favorites count across all types
+  int get totalFavoritesCount {
+    final box = Hive.box(favoritesBox);
+    int count = 0;
+    for (final type in ['events', 'news', 'resources']) {
+      final value = box.get(type);
+      if (value != null) {
+        count += (value as List).length;
+      }
+    }
+    return count;
+  }
 }
