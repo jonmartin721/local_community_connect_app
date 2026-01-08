@@ -62,3 +62,6 @@ app.*.map.json
 .codiumai/
 CLAUDE.md
 .aider*
+
+# Auto Claude data directory
+.auto-claude/

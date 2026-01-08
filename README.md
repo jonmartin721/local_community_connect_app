@@ -1,97 +1,64 @@
 # Community Connect
 
-A beautifully designed Flutter app for discovering local events, news, and community resources. Built as a portfolio project demonstrating modern Flutter architecture and clean design principles.
+A Flutter app for discovering local events, news, and community resources. I built this as a portfolio project to demonstrate feature-first architecture, Riverpod 3.0, and offline-first data with Hive.
+
+<!-- TODO: Add screenshots here -->
 
 ## Features
 
-- **Events Discovery** - Browse upcoming community events with category filtering
-- **Local News** - Stay informed with community announcements and updates
-- **Resource Directory** - Find local services, government offices, and community organizations
-- **Favorites** - Save events, news, and resources for quick access
-- **Search** - Find content across all categories
-- **Dark Mode** - Full dark theme support
-- **Offline-First** - Data persists locally with Hive
+- **Events** — Browse upcoming events with category filtering
+- **News** — Community announcements and updates
+- **Resources** — Local services, government offices, organizations
+- **Profile** — User preferences with notifications and privacy settings
+- **Favorites** — Save anything for quick access
+- **Search** — Find content across all categories
+- **Dark Mode** — Full theme support
+- **Offline-First** — Everything persists locally
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|------------|
+| | |
+|---|---|
 | **Framework** | Flutter 3.7+ |
-| **State Management** | Riverpod 3.0 (with code generation) |
+| **State** | Riverpod 3.0 with codegen |
 | **Navigation** | go_router |
-| **Local Storage** | Hive |
-| **Architecture** | Feature-first, Clean Architecture principles |
+| **Storage** | Hive |
+| **Testing** | 96 unit and widget tests |
+
+## Quick Start
+
+```bash
+git clone https://github.com/jonmartin721/local_community_connect_app.git
+cd local_community_connect_app
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+flutter run
+```
 
 ## Architecture
 
 ```
 lib/
-├── app/                    # App-level configuration
-│   ├── theme/              # Colors, typography, Material 3 theme
-│   └── router.dart         # Navigation configuration
+├── app/                    # Theme + router
 ├── features/               # Feature modules
-│   ├── events/             # Events feature
-│   │   ├── screens/        # UI screens
-│   │   ├── widgets/        # Feature-specific widgets
-│   │   └── providers/      # Riverpod state management
-│   ├── news/               # News feature
-│   ├── resources/          # Resources feature
-│   ├── favorites/          # Favorites feature
-│   ├── search/             # Search feature
-│   └── onboarding/         # Onboarding flow
-├── shared/                 # Shared code
-│   ├── models/             # Data models + Hive adapters
-│   ├── data/               # Data layer (Hive service, sample data)
-│   ├── providers/          # Shared providers
-│   └── widgets/            # Shared widgets
-└── main.dart               # App entry point
+│   ├── events/
+│   │   ├── screens/
+│   │   ├── widgets/
+│   │   └── providers/
+│   ├── news/
+│   ├── resources/
+│   ├── favorites/
+│   ├── search/
+│   ├── profile/
+│   └── onboarding/
+└── shared/                 # Models, data layer, shared widgets
 ```
 
-## Design
+Each feature follows the same pattern: `screens/`, `providers/`, and optionally `widgets/`.
 
-The app features a warm, welcoming design palette:
+## Code Examples
 
-- **Primary**: Terracotta (#E07A5F) - warm, approachable
-- **Secondary**: Sage (#81B29A) - natural, calming
-- **Tertiary**: Gold (#F2CC8F) - friendly, optimistic
-
-Typography uses **Fraunces** (display) and **Nunito Sans** (body) for a distinctive, readable experience.
-
-## Getting Started
-
-### Prerequisites
-
-- Flutter SDK 3.7 or higher
-- Dart 3.0 or higher
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/local_community_connect_app.git
-   cd local_community_connect_app
-   ```
-
-2. **Install dependencies**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Generate code** (Riverpod providers)
-   ```bash
-   dart run build_runner build --delete-conflicting-outputs
-   ```
-
-4. **Run the app**
-   ```bash
-   flutter run
-   ```
-
-## Project Highlights
-
-### State Management (Riverpod 3.0)
-
-Providers use code generation for type safety:
+### Riverpod with Code Generation
 
 ```dart
 @riverpod
@@ -104,52 +71,61 @@ class EventsNotifier extends _$EventsNotifier {
 }
 ```
 
-### Local Persistence (Hive)
+### Manual Hive TypeAdapters
 
-Manually-written TypeAdapters for clean serialization:
+I wrote the TypeAdapters by hand rather than using code generation—gives more control over serialization:
 
 ```dart
 class EventAdapter extends TypeAdapter<Event> {
   @override
   final int typeId = 0;
-  // Read/write implementation
+
+  @override
+  Event read(BinaryReader reader) {
+    return Event(
+      id: reader.read(),
+      title: reader.read(),
+      // ...
+    );
+  }
 }
 ```
 
-### Navigation (go_router)
-
-Declarative routing with ShellRoute for persistent bottom nav:
+### go_router with Shell
 
 ```dart
 ShellRoute(
   builder: (context, state, child) => BottomNavShell(child: child),
   routes: [
-    GoRoute(path: '/events', ...),
-    GoRoute(path: '/news', ...),
+    GoRoute(path: '/events', builder: (_, __) => const EventsScreen()),
+    GoRoute(path: '/news', builder: (_, __) => const NewsScreen()),
+    // ...
   ],
 )
 ```
 
-## What This Demonstrates
+## Design
 
-- **Feature-first architecture** for scalable Flutter apps
-- **Riverpod 3.0** state management with code generation
-- **go_router** for declarative navigation
-- **Hive** for efficient local storage
-- **Material 3** theming with custom design systems
-- **Clean separation** between UI, state, and data layers
+The color palette is intentionally warm:
 
-## Future Enhancements
+- **Terracotta** `#E07A5F` — primary actions
+- **Sage** `#81B29A` — secondary elements
+- **Gold** `#F2CC8F` — accents
 
-- [ ] Backend integration (Firebase/Supabase)
-- [ ] Push notifications for events
-- [ ] Map integration for locations
-- [ ] Social sharing
+Typography: Fraunces for headings, Nunito Sans for body text.
+
+## Testing
+
+```bash
+flutter test
+```
+
+96 tests covering:
+- Provider logic (events, news, resources, search, theme)
+- HiveService data layer
+- Widget rendering and navigation
+- Edge cases and error states
 
 ## License
 
-MIT License - feel free to use as a learning resource.
-
----
-
-Built with Flutter
+MIT — use it however you want.
