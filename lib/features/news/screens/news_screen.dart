@@ -9,6 +9,7 @@ import '../../../shared/widgets/theme_toggle_button.dart';
 import '../../../shared/widgets/search_button.dart';
 import '../../../app/theme/colors.dart';
 import '../../../app/theme/spacing.dart';
+import '../../../shared/utils/responsive.dart';
 import '../providers/news_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
 
@@ -18,9 +19,8 @@ class NewsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final newsAsync = ref.watch(newsProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWide = screenWidth > 800;
-    final isExtraWide = screenWidth > 1200;
+    final isWide = context.isWide;
+    final isExtraWide = context.isExtraWide;
 
     return Scaffold(
       body: Center(

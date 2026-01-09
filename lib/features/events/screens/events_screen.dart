@@ -11,6 +11,7 @@ import '../../../shared/widgets/search_button.dart';
 import '../../../shared/widgets/filter_chip.dart';
 import '../../../app/theme/colors.dart';
 import '../../../app/theme/spacing.dart';
+import '../../../shared/utils/responsive.dart';
 import '../providers/events_provider.dart';
 import '../../favorites/providers/favorites_provider.dart';
 
@@ -28,9 +29,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
   Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventsProvider);
     final categories = ref.watch(eventCategoriesProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWide = screenWidth > 800;
-    final isExtraWide = screenWidth > 1200;
+    final isWide = context.isWide;
+    final isExtraWide = context.isExtraWide;
 
     return Scaffold(
       body: Center(

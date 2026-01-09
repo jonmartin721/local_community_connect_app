@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../app/theme/spacing.dart';
 import '../../../shared/models/models.dart';
+import '../../../shared/utils/responsive.dart';
 import '../../../shared/widgets/theme_toggle_button.dart';
 import '../providers/favorites_provider.dart';
 import '../../events/providers/events_provider.dart';
@@ -53,8 +54,7 @@ class _FavoriteEventsTab extends ConsumerWidget {
       favoritesProvider.select((state) => state[FavoriteType.events] ?? {}),
     );
     final eventsAsync = ref.watch(eventsProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWide = screenWidth > 800;
+    final isWide = context.isWide;
 
     return eventsAsync.when(
       data: (allEvents) {
@@ -148,8 +148,7 @@ class _FavoriteNewsTab extends ConsumerWidget {
       favoritesProvider.select((state) => state[FavoriteType.news] ?? {}),
     );
     final newsAsync = ref.watch(newsProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWide = screenWidth > 800;
+    final isWide = context.isWide;
 
     return newsAsync.when(
       data: (allNews) {
@@ -243,8 +242,7 @@ class _FavoriteResourcesTab extends ConsumerWidget {
       favoritesProvider.select((state) => state[FavoriteType.resources] ?? {}),
     );
     final resourcesAsync = ref.watch(resourcesProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isWide = screenWidth > 800;
+    final isWide = context.isWide;
 
     return resourcesAsync.when(
       data: (allResources) {
