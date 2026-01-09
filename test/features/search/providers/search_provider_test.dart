@@ -155,7 +155,7 @@ void main() {
       final results = SearchResults(
         events: [
           Event(
-            id: 'e1',
+            id: 'test-event',
             title: 'Test',
             date: DateTime.now(),
             category: 'Test',
@@ -173,7 +173,7 @@ void main() {
         events: [],
         news: [
           NewsItem(
-            id: 'n1',
+            id: 'test-news',
             title: 'Test',
             summary: 'Test',
             publishedDate: DateTime.now(),
@@ -188,7 +188,7 @@ void main() {
       final results = SearchResults(
         events: [],
         news: [],
-        resources: [LocalResource(id: 'r1', name: 'Test', category: 'Test')],
+        resources: [LocalResource(id: 'test-resource', name: 'Test', category: 'Test')],
       );
       expect(results.isEmpty, isFalse);
     });

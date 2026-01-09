@@ -121,23 +121,23 @@ void main() {
     });
 
     test('filterByCategory returns all events when category is null', () async {
-      final event1 = Event(
-        id: 'e1',
-        title: 'Event 1',
+      final communityEvent = Event(
+        id: 'community-event',
+        title: 'Community Event',
         date: DateTime.now(),
         category: 'Community',
         description: 'Desc',
       );
-      final event2 = Event(
-        id: 'e2',
-        title: 'Event 2',
+      final artsEvent = Event(
+        id: 'arts-event',
+        title: 'Arts Event',
         date: DateTime.now(),
         category: 'Arts',
         description: 'Desc',
       );
 
-      await addEvent(event1);
-      await addEvent(event2);
+      await addEvent(communityEvent);
+      await addEvent(artsEvent);
 
       final notifier = container.read(eventsProvider.notifier);
       final events = await container.read(eventsProvider.future);
@@ -148,14 +148,14 @@ void main() {
 
     test('filterByCategory returns only matching events', () async {
       final communityEvent = Event(
-        id: 'e1',
+        id: 'community-filter-event',
         title: 'Community Event',
         date: DateTime.now(),
         category: 'Community',
         description: 'Desc',
       );
       final artsEvent = Event(
-        id: 'e2',
+        id: 'arts-filter-event',
         title: 'Arts Event',
         date: DateTime.now(),
         category: 'Arts',
@@ -175,15 +175,15 @@ void main() {
 
     test('filterByCategory returns empty list for non-matching category',
         () async {
-      final event = Event(
-        id: 'e1',
+      final communityEvent = Event(
+        id: 'community-only-event',
         title: 'Event',
         date: DateTime.now(),
         category: 'Community',
         description: 'Desc',
       );
 
-      await addEvent(event);
+      await addEvent(communityEvent);
 
       final notifier = container.read(eventsProvider.notifier);
       final events = await container.read(eventsProvider.future);
