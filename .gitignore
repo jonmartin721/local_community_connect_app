@@ -34,8 +34,7 @@ migrate_working_dir/
 /build/
 
 # Test Hive databases
-test_hive/
-test_hive_provider/
+test_hive*/
 
 # Symbolication related
 app.*.symbols

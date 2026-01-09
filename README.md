@@ -2,8 +2,6 @@
 
 A Flutter app for discovering local events, news, and community resources. I built this as a portfolio project to demonstrate feature-first architecture, Riverpod 3.0, and offline-first data with Hive.
 
-<!-- TODO: Add screenshots here -->
-
 ## Features
 
 - **Events** — Browse upcoming events with category filtering
