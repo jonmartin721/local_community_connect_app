@@ -77,9 +77,12 @@ class LocationSetup extends _$LocationSetup {
         );
       }
     } catch (e) {
+      final message = e.toString().contains('SocketException')
+          ? 'No internet connection. Please check your network.'
+          : 'Could not search locations. Please try again.';
       state = state.copyWith(
         status: LocationSetupStatus.error,
-        errorMessage: 'Could not search. Check your internet connection.',
+        errorMessage: message,
       );
     }
   }
@@ -119,9 +122,12 @@ class LocationSetup extends _$LocationSetup {
       state = state.copyWith(status: LocationSetupStatus.success);
       return true;
     } catch (e) {
+      final message = e.toString().contains('SocketException')
+          ? 'No internet connection. Please check your network.'
+          : 'Could not fetch resources. Please try again.';
       state = state.copyWith(
         status: LocationSetupStatus.error,
-        errorMessage: 'Could not fetch resources. Please try again.',
+        errorMessage: message,
       );
       return false;
     }

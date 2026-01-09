@@ -27,7 +27,12 @@ class LocationService {
       throw Exception('Geocoding failed: ${response.statusCode}');
     }
 
-    final List<dynamic> data = json.decode(response.body);
+    final List<dynamic> data;
+    try {
+      data = json.decode(response.body) as List<dynamic>;
+    } on FormatException catch (e) {
+      throw Exception('Invalid response from geocoding service: ${e.message}');
+    }
     return data.map((e) => UserLocation.fromNominatim(e)).toList();
   }
 
@@ -45,8 +50,14 @@ class LocationService {
       throw Exception('Overpass query failed: ${response.statusCode}');
     }
 
-    final data = json.decode(response.body);
-    final elements = data['elements'] as List<dynamic>;
+    final Map<String, dynamic> data;
+    try {
+      data = json.decode(response.body) as Map<String, dynamic>;
+    } on FormatException catch (e) {
+      throw Exception('Invalid response from Overpass API: ${e.message}');
+    }
+
+    final elements = data['elements'] as List<dynamic>? ?? [];
 
     return elements
         .map((e) => _elementToResource(e))

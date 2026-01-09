@@ -23,10 +23,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _completeOnboarding() async {
-    final hive = await ref.read(hiveServiceProvider.future);
-    await hive.setSeenOnboarding(true);
-    if (mounted) {
-      context.go('/events');
+    try {
+      final hive = await ref.read(hiveServiceProvider.future);
+      await hive.setSeenOnboarding(true);
+      if (mounted) {
+        context.go('/events');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not save preferences. Please try again.'),
+          ),
+        );
+      }
     }
   }
 
